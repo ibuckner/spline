@@ -906,4 +906,4 @@ function svg(container, options) {
     return svg;
 }
 
-export { svg };
+export { select, svg };

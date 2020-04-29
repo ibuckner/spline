@@ -1,3 +1,4 @@
+import { select } from "d3-selection";
 declare type TMargin = {
     bottom: number;
     left: number;
@@ -14,5 +15,5 @@ declare type TSVGGenerator = {
  * @param container - parent DOM container for SVG selection
  * @param options - string to select from
  */
-export declare function svg(container: HTMLElement | string, options?: TSVGGenerator): any;
-export {};
+declare function svg(container: HTMLElement | string, options?: TSVGGenerator): any;
+export { select, svg };

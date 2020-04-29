@@ -18,7 +18,7 @@ type TSVGGenerator = {
  * @param container - parent DOM container for SVG selection
  * @param options - string to select from
  */
-export function svg(container: HTMLElement | string, options?: TSVGGenerator): any {
+function svg(container: HTMLElement | string, options?: TSVGGenerator): any {
 	const parent = select(container as any);
 
 	if (options === undefined) {
@@ -75,3 +75,7 @@ export function svg(container: HTMLElement | string, options?: TSVGGenerator): a
 	return svg;
 }
 
+export {
+	select,
+	svg
+};
