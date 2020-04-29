@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist",
+    "declarationMap": false,
+    "esModuleInterop": true,
+    "lib": ["esnext.array", "esnext", "es2017", "dom", "es5"],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "removeComments": false,
+    "strict": true,
+    "target": "es2015"
+  },
+  "exclude": [
+    "src/**/*.test.ts",
+    "node_modules"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ]
+}

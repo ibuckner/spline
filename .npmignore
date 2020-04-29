@@ -1,0 +1,11 @@
+*.log*
+*.json
+.buildcache
+.gitignore
+.eslintignore
+.github
+.vscode
+build
+node_modules
+rollup.config.js
+src
