@@ -880,8 +880,6 @@ function svg(container, options) {
     if (options.margin.left === undefined) {
         options.margin.left = 10;
     }
-    const rh = options.height - options.margin.top - options.margin.bottom;
-    const rw = options.width - options.margin.left - options.margin.right;
     const svg = parent.append("svg")
         .attr("x", 0)
         .attr("y", 0)
@@ -895,8 +893,8 @@ function svg(container, options) {
         .attr("clipPathUnits", "userSpaceOnUse")
         .attr("id", "clipcanvas");
     clip.append("rect")
-        .attr("height", rh)
-        .attr("width", rw)
+        .attr("height", options.height)
+        .attr("width", options.width)
         .attr("x", 0)
         .attr("y", 0);
     svg.append("g")
@@ -906,4 +904,4 @@ function svg(container, options) {
     return svg;
 }
 
-export { select, svg };
+export { svg };

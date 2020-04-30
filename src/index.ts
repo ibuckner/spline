@@ -43,9 +43,6 @@ function svg(container: HTMLElement | string, options?: TSVGGenerator): any {
 		options.margin.left = 10;
 	}
 
-	const rh = options.height - options.margin.top - options.margin.bottom;
-	const rw = options.width - options.margin.left- options.margin.right;
-
 	const svg = parent.append("svg")
 		.attr("x", 0)
 		.attr("y", 0)
@@ -62,8 +59,8 @@ function svg(container: HTMLElement | string, options?: TSVGGenerator): any {
 		.attr("id", "clipcanvas");
 
 	clip.append("rect")
-		.attr("height", rh)
-		.attr("width", rw)
+		.attr("height", options.height)
+		.attr("width", options.width)
 		.attr("x", 0)
 		.attr("y", 0); 
 
@@ -76,6 +73,5 @@ function svg(container: HTMLElement | string, options?: TSVGGenerator): any {
 }
 
 export {
-	select,
 	svg
 };

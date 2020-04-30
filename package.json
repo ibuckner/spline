@@ -1,5 +1,5 @@
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A small collection of D3 related functions",
   "main": "./dist/spline.js",
   "module": "./dist/spline.js",
