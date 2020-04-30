@@ -1,5 +1,3 @@
-import { select } from "d3-selection";
-
 type TMargin = {
 	bottom: number,
 	left: number,
@@ -13,20 +11,43 @@ type TSVGGenerator = {
 	width?: number
 };
 
+const NS = {
+  svg: "http://www.w3.org/2000/svg",
+  xhtml: "http://www.w3.org/1999/xhtml",
+  xlink: "http://www.w3.org/1999/xlink",
+  xml: "http://www.w3.org/XML/1998/namespace",
+  xmlns: "http://www.w3.org/2000/xmlns/"
+};
+
 /**
- * Creates a barebones SVG object and returns the d3 selection
- * @param container - parent DOM container for SVG selection
+ * Measure the content area minus the padding and border
+ * @param container - DOM element to measure
+ * @returns - DOMRect
+ */
+function measure(container: HTMLElement): DOMRect {
+	let result: DOMRect = container.getBoundingClientRect();
+	const s = window.getComputedStyle(container);
+	let ph = parseFloat(s.paddingTop) + parseFloat(s.paddingBottom);
+	let pw = parseFloat(s.paddingLeft) + parseFloat(s.paddingRight);
+	let bh = parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth);
+	let bw = parseFloat(s.borderLeftWidth) + parseFloat(s.borderRightWidth);
+	result.width = result.width - pw - bw;
+	result.height = result.height - ph - bh;
+	return result;
+}
+
+/**
+ * Creates SVG element for use with D3 visualisations
+ * @param container - parent DOM element to append SVG to
  * @param options - string to select from
  */
-function svg(container: HTMLElement | string, options?: TSVGGenerator): any {
-	const parent = select(container as any);
-
+function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElement> {
 	if (options === undefined) {
 		options = {};
 	}
 
 	if (options.height === undefined || options.width === undefined) {
-		const bbox: DOMRect = (parent.node() as HTMLElement).getBoundingClientRect();
+		const bbox: DOMRect = measure(container);
 		options.height = bbox.height;
 		options.width = bbox.width;
 	}
@@ -43,35 +64,29 @@ function svg(container: HTMLElement | string, options?: TSVGGenerator): any {
 		options.margin.left = 10;
 	}
 
-	const svg = parent.append("svg")
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("height", "100%")
-		.attr("width", "100%")
-		.attr("viewBox", `0 0 ${options.width} ${options.height}`)
-		.attr("xmlns", "http://www.w3.org/2000/svg")
-		.attr("xmlns:xlink", "http://www.w3.org/1999/xlink");
+	const svg = document.createElementNS(NS.svg, "svg");
+	svg.setAttributeNS(null, "x", "0");
+	svg.setAttributeNS(null, "y", "0");
+	svg.setAttributeNS(null, "height", "100%");
+	svg.setAttributeNS(null, "width", "100%");
+	svg.setAttributeNS(null, "viewBox", `0 0 ${options.width} ${options.height}`);
+	svg.setAttributeNS(NS.xmlns, "xmlns", NS.svg);
+	container.appendChild(svg);
 
-	const defs = svg.append("defs");
+	const defs = document.createElementNS(NS.svg, "defs");
+	svg.appendChild(defs);
 
-	const clip: any = defs.append("clipPath")
-		.attr("clipPathUnits", "userSpaceOnUse")
-		.attr("id", "clipcanvas");
-
-	clip.append("rect")
-		.attr("height", options.height)
-		.attr("width", options.width)
-		.attr("x", 0)
-		.attr("y", 0); 
-
-	svg.append("g")
-		.attr("class", "canvas")
-		.attr("transform", `translate(${options.margin.left},${options.margin.top})`)
-		.attr("clip-path", `url(#clipcanvas)`);
+	const canvas = document.createElementNS(NS.svg, "g");
+	canvas.setAttributeNS(null, "class", "canvas");
+	canvas.setAttributeNS(null, "transform", `translate(${options.margin.left},${options.margin.top})`);
+	svg.appendChild(canvas);
 
 	return svg;
 }
 
 export {
-	svg
+	measure,
+	svg,
+	TMargin,
+	TSVGGenerator
 };

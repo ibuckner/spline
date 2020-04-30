@@ -14,6 +14,11 @@ export default [
 			{
 				file: "./dist/index.js",
 				format: "es",
+			},
+			{
+				file: "./docs/lib/spline.js",
+				format: "iife",
+				name: "spline"
 			}
 	  ],
 	  plugins: [

@@ -1,13 +1,18 @@
 import { svg } from ".";
 
-test("Test SVG creation", () => {
-  const div = document.createElement("div");
-  div.style.height = "400px";
-  div.style.width = "450px";
-  document.body.appendChild(div);
-  const s = svg(div);
-  expect(s).toBeDefined();
-  const canvas = s.select(".canvas");
-  expect(canvas.node().classList.contains("canvas")).toStrictEqual(true);
+beforeAll(() => {
+  document.body.innerHTML = `<div id="container" style="height: 400px; width: 450px;">Hello world</div>`;
 });
 
+afterAll(() => {
+  const div = document.getElementById("container");
+  if (div) {
+    document.body.removeChild(div);
+  }
+});
+
+test("Test SVG creation", () => {
+  const el: HTMLDivElement = document.getElementById("container") as HTMLDivElement;
+  expect(el).toBeDefined();
+  expect(el.style.height).toStrictEqual("400px");
+});

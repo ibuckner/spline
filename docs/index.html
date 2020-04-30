@@ -1,0 +1,38 @@
+<!DOCTYPE xhtml>
+<html xmlns="https://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-Type" content="text/html; charset=utf-8" />
+	<title>Test</title>
+  <link href="favicon.ico" rel="shortcut icon" />
+  <style>
+    #container {
+      border: 1px solid #ccc;
+      height: 400px;
+      margin: 10px;
+      padding: 5px;
+      width: 450px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <pre><code></code></pre>
+  <script src="./lib/spline.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    const container = document.getElementById("container");
+    const code = document.querySelector("code");
+    const s = spline.svg(container);
+    const canvas = s.querySelector(".canvas");
+    const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    r.setAttributeNS(null, "height", "100");
+    r.setAttributeNS(null, "width", "100");
+    canvas.appendChild(r);
+    const base = spline.measure(container);
+    code.textContent += "Measure the parent container's available content area for SVG sizing\n";
+    code.textContent += "We want to get 400 x 450\n";
+    code.textContent += "measure() H:" + base.height + " W:" + base.width + "\n";
+    const DOMApi = container.getBoundingClientRect();
+    code.textContent += "element.getBoudingClientRect() H:" + DOMApi.height + " W:" + DOMApi.width + "\n";
+	</script>
+</body>
+</html>

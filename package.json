@@ -1,5 +1,5 @@
 {
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "A small collection of D3 related functions",
   "main": "./dist/spline.js",
   "module": "./dist/spline.js",
@@ -9,13 +9,15 @@
     "access": "public"
   },
   "scripts": {
-    "build": "npm run tsc && npm run bundle",
-    "bundle": "rollup -c",
-    "upload": "npm publish --access public",
-    "upload-test": "npm publish --dry-run --access public",
-    "test": "jest --config jestconfig.json",
+    "build": "npm run compile",
+    "compile": "rollup -cw",
+    "list-globals": "npm list -g --depth 0",
+    "test": "npm run test-www",
     "test-debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --config jestconfig.json --runInBand",
-    "tsc": "tsc"
+    "test-jest": "jest --config jestconfig.json",
+    "test-upload": "npm publish --dry-run --access public",
+    "test-www": "http-server ./docs -a localhost -p 5000 -o",
+    "upload": "npm publish --access public"
   },
   "repository": {
     "type": "git",
@@ -45,7 +47,5 @@
     "ts-jest": "^25.4.0",
     "typescript": "^3.8.3"
   },
-  "dependencies": {
-    "d3-selection": "^1.4.1"
-  }
+  "dependencies": {}
 }
