@@ -12,8 +12,14 @@ export default [
 		},
 	  output: [
 			{
-				file: "./dist/index.js",
+				file: "./dist/spline.es.js",
 				format: "es",
+				esModule: true
+			},
+			{
+				file: "./dist/spline.js",
+				format: "iife",
+				name: "spline"
 			},
 			{
 				file: "./docs/lib/spline.js",
