@@ -1,3 +1,5 @@
+import { ResizeObserver } from '@juggle/resize-observer';
+
 type TMargin = {
 	bottom: number,
 	left: number,
@@ -64,12 +66,26 @@ function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElemen
 		options.margin.left = 10;
 	}
 
+	const ro = new ResizeObserver((entries, observer) => {
+		const entry = entries[0];
+		const { inlineSize: w, blockSize: h } = entry.contentBoxSize[0];
+		if (options) {
+			options.height = h;
+			options.width = w;
+		}
+		svg.setAttributeNS(null, "height", `${h}`);
+		svg.setAttributeNS(null, "width", `${w}`);
+	});
+
+	ro.observe(container, { box: "content-box" });
+
 	const svg = document.createElementNS(NS.svg, "svg");
 	svg.setAttributeNS(null, "x", "0");
 	svg.setAttributeNS(null, "y", "0");
-	svg.setAttributeNS(null, "height", "100%");
-	svg.setAttributeNS(null, "width", "100%");
+	svg.setAttributeNS(null, "height", `100%`);
+	svg.setAttributeNS(null, "width", `100%`);
 	svg.setAttributeNS(null, "viewBox", `0 0 ${options.width} ${options.height}`);
+	svg.setAttributeNS(null, "preserveAspectRatio", "xMinYMin meet");
 	svg.setAttributeNS(NS.xmlns, "xmlns", NS.svg);
 	container.appendChild(svg);
 

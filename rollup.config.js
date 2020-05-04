@@ -12,12 +12,12 @@ export default [
 		},
 	  output: [
 			{
-				file: "./dist/spline.es.js",
-				format: "es",
+				file: "./dist/index.js",
+				format: "esm",
 				esModule: true
 			},
 			{
-				file: "./dist/spline.js",
+				file: "./dist/iife/spline.js",
 				format: "iife",
 				name: "spline"
 			},

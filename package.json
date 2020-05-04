@@ -1,12 +1,9 @@
 {
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A small collection of D3 related functions",
-  "main": "./dist/spline.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "name": "@buckneri/spline",
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "npm run compile",
     "compile": "rollup -cw",
@@ -46,5 +43,7 @@
     "ts-jest": "^25.4.0",
     "typescript": "^3.8.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@juggle/resize-observer": "^3.1.3"
+  }
 }
