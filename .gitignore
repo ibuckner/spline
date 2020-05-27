@@ -2,12 +2,8 @@ logs
 *.log
 npm-debug.log*
 .npm
-coverage
-build
 node_modules
 .npm
-.vscode
 .buildcache
 npm-debug.log
 package-lock.json
-private

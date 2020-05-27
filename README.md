@@ -3,6 +3,9 @@
 A small collection of D3 related functions
 
 ```javascript
+formatNumber(number);
+// returns a formated string number
+
 measure(element);
 // returns a DOMRect (see element.getBoundingClientRect())
 // minus the padding and border dimensions on height and width

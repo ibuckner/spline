@@ -21,4 +21,5 @@ declare function measure(container: HTMLElement): DOMRect;
  * @param options - string to select from
  */
 declare function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElement>;
-export { measure, svg, TMargin, TSVGGenerator };
+declare function formatNumber(v: number): string;
+export { formatNumber, measure, svg, TMargin, TSVGGenerator };

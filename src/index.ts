@@ -1,3 +1,4 @@
+import { format } from "d3-format";
 import { ResizeObserver } from '@juggle/resize-observer';
 
 type TMargin = {
@@ -100,7 +101,13 @@ function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElemen
 	return svg;
 }
 
+const format2 = format(",.2f"), format1 = format(",.1f"), format0 = format(",.0f");
+function formatNumber(v: number): string {
+	return v < 1 ? format2(v) : v < 10 ? format1(v) : format0(v);
+}
+
 export {
+	formatNumber,
 	measure,
 	svg,
 	TMargin,
