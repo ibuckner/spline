@@ -79,7 +79,7 @@ function positionPop(referenceElement: SVGElement, targetElement: HTMLElement | 
 	let x: number = rb.right + padding, y: number = rb.top + (rb.height / 2) - (tb.height / 2);
 	let h: TOrientX = "right", v: TOrientY = "middle";
 
-	if (y + (tb.height / 2) > ch) {
+	if (y + tb.height > ch) {
 		v = "top";
 		y = rb.top - padding - tb.height;
 	}
