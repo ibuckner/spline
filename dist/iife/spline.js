@@ -843,16 +843,15 @@ var spline = (function (exports) {
       const ch = document.documentElement.clientHeight;
       const cw = document.documentElement.clientWidth;
       let x = rb.right + padding, y = rb.bottom + padding;
-      let v = "bottom";
-      if (rb.top > tb.height + padding) {
+      let h = "right", v = "bottom";
+      if (rb.bottom + padding + tb.height > ch) {
           v = "top";
           y = rb.top - padding - tb.height;
       }
-      else if (rb.bottom + tb.height + padding > ch) {
+      else if (rb.top > ch * 0.33 && tb.height + padding > rb.top) {
           v = "middle";
           y = rb.top + (rb.height / 2);
       }
-      let h = "right";
       if (rb.left > tb.left + tb.width + padding) {
           h = "left";
           x = rb.left - padding - tb.width;
