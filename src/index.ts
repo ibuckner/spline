@@ -76,21 +76,25 @@ function positionPop(referenceElement: SVGElement, targetElement: HTMLElement | 
 	const tb: DOMRect = targetElement.getBoundingClientRect();
 	const ch: number = document.documentElement.clientHeight;
 	const cw: number = document.documentElement.clientWidth;
-	let x: number = rb.right + padding, y: number = rb.bottom + padding;
-	let h: TOrientX = "right", v: TOrientY = "bottom";
+	let x: number = rb.right + padding, y: number = rb.top + (rb.height / 2) - (tb.height / 2);
+	let h: TOrientX = "right", v: TOrientY = "middle";
 
-	if (rb.bottom + padding + tb.height > ch) {
+	if (y + (tb.height / 2) + padding > ch) {
 		v = "top";
 		y = rb.top - padding - tb.height;
-	} else if (rb.top > ch * 0.33 && tb.height + padding > rb.top) {
-		v = "middle";
-		y = rb.top + (rb.height / 2);
+	}
+	
+	if (y < 0) {
+		v = "bottom";
+		y = rb.bottom + padding;
 	}
 
-	if (rb.left > tb.left + tb.width + padding) {
+	if (x + tb.width > cw) {
 		h = "left";
 		x = rb.left - padding - tb.width;
-	} else if (rb.right + tb.width + padding > cw) {
+	}
+	
+	if (x < 0) {
 		h = "center";
 		x = rb.left + (rb.width / 2);
 	}

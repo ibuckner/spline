@@ -839,21 +839,21 @@ function positionPop(referenceElement, targetElement, padding = 0) {
     const tb = targetElement.getBoundingClientRect();
     const ch = document.documentElement.clientHeight;
     const cw = document.documentElement.clientWidth;
-    let x = rb.right + padding, y = rb.bottom + padding;
-    let h = "right", v = "bottom";
-    if (rb.bottom + padding + tb.height > ch) {
+    let x = rb.right + padding, y = rb.top + (rb.height / 2) - (tb.height / 2);
+    let h = "right", v = "middle";
+    if (y + (tb.height / 2) + padding > ch) {
         v = "top";
         y = rb.top - padding - tb.height;
     }
-    else if (rb.top > ch * 0.33 && tb.height + padding > rb.top) {
-        v = "middle";
-        y = rb.top + (rb.height / 2);
+    if (y < 0) {
+        v = "bottom";
+        y = rb.bottom + padding;
     }
-    if (rb.left > tb.left + tb.width + padding) {
+    if (x + tb.width > cw) {
         h = "left";
         x = rb.left - padding - tb.width;
     }
-    else if (rb.right + tb.width + padding > cw) {
+    if (x < 0) {
         h = "center";
         x = rb.left + (rb.width / 2);
     }
