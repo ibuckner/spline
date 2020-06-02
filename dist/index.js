@@ -397,7 +397,7 @@ var isReplacedElement = function (target) {
 
 var global = typeof window !== 'undefined' ? window : {};
 
-var cache = new Map();
+var cache = new WeakMap();
 var scrollRegexp = /auto|scroll/;
 var verticalRegexp = /^tb|vertical/;
 var IE = (/msie|trident/i).test(global.navigator && global.navigator.userAgent);
@@ -417,8 +417,9 @@ var zeroBoxes = Object.freeze({
     contentBoxSize: size(),
     contentRect: new DOMRectReadOnly(0, 0, 0, 0)
 });
-var calculateBoxSizes = function (target) {
-    if (cache.has(target)) {
+var calculateBoxSizes = function (target, forceRecalculation) {
+    if (forceRecalculation === void 0) { forceRecalculation = false; }
+    if (cache.has(target) && !forceRecalculation) {
         return cache.get(target);
     }
     if (isHidden(target)) {
@@ -460,8 +461,8 @@ var calculateBoxSizes = function (target) {
     cache.set(target, boxes);
     return boxes;
 };
-var calculateBoxSize = function (target, observedBox) {
-    var _a = calculateBoxSizes(target), borderBoxSize = _a.borderBoxSize, contentBoxSize = _a.contentBoxSize, devicePixelContentBoxSize = _a.devicePixelContentBoxSize;
+var calculateBoxSize = function (target, observedBox, forceRecalculation) {
+    var _a = calculateBoxSizes(target, forceRecalculation), borderBoxSize = _a.borderBoxSize, contentBoxSize = _a.contentBoxSize, devicePixelContentBoxSize = _a.devicePixelContentBoxSize;
     switch (observedBox) {
         case ResizeObserverBoxOptions.DEVICE_PIXEL_CONTENT_BOX:
             return devicePixelContentBoxSize;
@@ -527,7 +528,6 @@ var broadcastActiveObservations = function () {
 };
 
 var gatherActiveObservationsAtDepth = function (depth) {
-    cache.clear();
     resizeObservers.forEach(function processObserver(ro) {
         ro.activeTargets.splice(0, ro.activeTargets.length);
         ro.skippedTargets.splice(0, ro.skippedTargets.length);
@@ -580,7 +580,7 @@ var queueResizeObserver = function (cb) {
 
 var watching = 0;
 var isWatching = function () { return !!watching; };
-var CATCH_FRAMES = 60 / 5;
+var CATCH_PERIOD = 250;
 var observerConfig = { attributes: true, characterData: true, childList: true, subtree: true };
 var events = [
     'resize',
@@ -598,6 +598,10 @@ var events = [
     'blur',
     'focus'
 ];
+var time = function (timeout) {
+    if (timeout === void 0) { timeout = 0; }
+    return Date.now() + timeout;
+};
 var scheduled = false;
 var Scheduler = (function () {
     function Scheduler() {
@@ -605,12 +609,14 @@ var Scheduler = (function () {
         this.stopped = true;
         this.listener = function () { return _this.schedule(); };
     }
-    Scheduler.prototype.run = function (frames) {
+    Scheduler.prototype.run = function (timeout) {
         var _this = this;
+        if (timeout === void 0) { timeout = CATCH_PERIOD; }
         if (scheduled) {
             return;
         }
         scheduled = true;
+        var until = time(timeout);
         queueResizeObserver(function () {
             var elementsHaveResized = false;
             try {
@@ -618,14 +624,15 @@ var Scheduler = (function () {
             }
             finally {
                 scheduled = false;
+                timeout = until - time();
                 if (!isWatching()) {
                     return;
                 }
                 if (elementsHaveResized) {
-                    _this.run(60);
+                    _this.run(1000);
                 }
-                else if (frames) {
-                    _this.run(frames - 1);
+                else if (timeout > 0) {
+                    _this.run(timeout);
                 }
                 else {
                     _this.start();
@@ -635,7 +642,7 @@ var Scheduler = (function () {
     };
     Scheduler.prototype.schedule = function () {
         this.stop();
-        this.run(CATCH_FRAMES);
+        this.run();
     };
     Scheduler.prototype.observe = function () {
         var _this = this;
@@ -683,7 +690,7 @@ var ResizeObservation = (function () {
         };
     }
     ResizeObservation.prototype.isActive = function () {
-        var size = calculateBoxSize(this.target, this.observedBox);
+        var size = calculateBoxSize(this.target, this.observedBox, true);
         if (skipNotifyOnElement(this.target)) {
             this.lastReportedSize = size;
         }
@@ -707,7 +714,7 @@ var ResizeObserverDetail = (function () {
     return ResizeObserverDetail;
 }());
 
-var observerMap = new Map();
+var observerMap = new WeakMap();
 var getObservationIndex = function (observationTargets, target) {
     for (var i = 0; i < observationTargets.length; i += 1) {
         if (observationTargets[i].target === target) {
@@ -721,36 +728,33 @@ var ResizeObserverController = (function () {
     }
     ResizeObserverController.connect = function (resizeObserver, callback) {
         var detail = new ResizeObserverDetail(resizeObserver, callback);
-        resizeObservers.push(detail);
         observerMap.set(resizeObserver, detail);
     };
     ResizeObserverController.observe = function (resizeObserver, target, options) {
-        if (observerMap.has(resizeObserver)) {
-            var detail = observerMap.get(resizeObserver);
-            if (getObservationIndex(detail.observationTargets, target) < 0) {
-                detail.observationTargets.push(new ResizeObservation(target, options && options.box));
-                updateCount(1);
-                scheduler.schedule();
-            }
+        var detail = observerMap.get(resizeObserver);
+        var firstObservation = detail.observationTargets.length === 0;
+        if (getObservationIndex(detail.observationTargets, target) < 0) {
+            firstObservation && resizeObservers.push(detail);
+            detail.observationTargets.push(new ResizeObservation(target, options && options.box));
+            updateCount(1);
+            scheduler.schedule();
         }
     };
     ResizeObserverController.unobserve = function (resizeObserver, target) {
-        if (observerMap.has(resizeObserver)) {
-            var detail = observerMap.get(resizeObserver);
-            var index = getObservationIndex(detail.observationTargets, target);
-            if (index >= 0) {
-                detail.observationTargets.splice(index, 1);
-                updateCount(-1);
-            }
+        var detail = observerMap.get(resizeObserver);
+        var index = getObservationIndex(detail.observationTargets, target);
+        var lastObservation = detail.observationTargets.length === 1;
+        if (index >= 0) {
+            lastObservation && resizeObservers.splice(resizeObservers.indexOf(detail), 1);
+            detail.observationTargets.splice(index, 1);
+            updateCount(-1);
         }
     };
     ResizeObserverController.disconnect = function (resizeObserver) {
-        if (observerMap.has(resizeObserver)) {
-            var detail = observerMap.get(resizeObserver);
-            resizeObservers.splice(resizeObservers.indexOf(detail), 1);
-            observerMap.delete(resizeObserver);
-            updateCount(-detail.observationTargets.length);
-        }
+        var _this = this;
+        var detail = observerMap.get(resizeObserver);
+        detail.observationTargets.slice().forEach(function (ot) { return _this.unobserve(resizeObserver, ot.target); });
+        detail.activeTargets.splice(0, detail.activeTargets.length);
     };
     return ResizeObserverController;
 }());
@@ -799,6 +803,15 @@ const NS = {
     xml: "http://www.w3.org/XML/1998/namespace",
     xmlns: "http://www.w3.org/2000/xmlns/"
 };
+const format2 = format(",.2f"), format1 = format(",.1f"), format0 = format(",.0f");
+/**
+ * Convenience wrapper for D3-format
+ * @example - formatNumber(1234) -> 1,234
+ * @param v - number to convert to number string
+ */
+function formatNumber(v) {
+    return v < 1 ? format2(v) : v < 10 ? format1(v) : format0(v);
+}
 /**
  * Measure the content area minus the padding and border
  * @param container - DOM element to measure
@@ -814,6 +827,38 @@ function measure(container) {
     result.width = result.width - pw - bw;
     result.height = result.height - ph - bh;
     return result;
+}
+/**
+ * Returns the x,y pair measurement
+ * @param referenceElement - element to position targetElement by
+ * @param targetElement - element that will receive position values
+ * @param padding - (optional) additional padding to account for
+ */
+function positionPop(referenceElement, targetElement, padding = 0) {
+    const rb = referenceElement.getBoundingClientRect();
+    const tb = targetElement.getBoundingClientRect();
+    const ch = document.documentElement.clientHeight;
+    const cw = document.documentElement.clientWidth;
+    let x = rb.right + padding, y = rb.bottom + padding;
+    let v = "bottom";
+    if (rb.top > tb.height + padding) {
+        v = "top";
+        y = rb.top - padding - tb.height;
+    }
+    else if (rb.bottom + tb.height + padding > ch) {
+        v = "middle";
+        y = rb.top + (rb.height / 2);
+    }
+    let h = "right";
+    if (rb.left > tb.left + tb.width + padding) {
+        h = "left";
+        x = rb.left - padding - tb.width;
+    }
+    else if (rb.right + tb.width + padding > cw) {
+        h = "center";
+        x = rb.left + (rb.width / 2);
+    }
+    return { orientX: h, orientY: v, x: x, y: y };
 }
 /**
  * Creates SVG element for use with D3 visualisations
@@ -866,9 +911,5 @@ function svg(container, options) {
     svg.appendChild(canvas);
     return svg;
 }
-const format2 = format(",.2f"), format1 = format(",.1f"), format0 = format(",.0f");
-function formatNumber(v) {
-    return v < 1 ? format2(v) : v < 10 ? format1(v) : format0(v);
-}
 
-export { formatNumber, measure, svg };
+export { formatNumber, measure, positionPop, svg };

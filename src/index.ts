@@ -8,6 +8,22 @@ type TMargin = {
 	top: number
 };
 
+type TOrientX = "left" | "center" | "right";
+
+type TOrientY = "top" | "middle" | "bottom";
+
+type TPoint = {
+	x: number,
+	y: number
+};
+
+type TPosition = {
+	orientX: TOrientX;
+	orientY: TOrientY;
+	x: number;
+	y: number;
+};
+
 type TSVGGenerator = {
 	height?: number,
 	margin?: TMargin
@@ -21,6 +37,16 @@ const NS = {
   xml: "http://www.w3.org/XML/1998/namespace",
   xmlns: "http://www.w3.org/2000/xmlns/"
 };
+
+const format2 = format(",.2f"), format1 = format(",.1f"), format0 = format(",.0f");
+/**
+ * Convenience wrapper for D3-format
+ * @example - formatNumber(1234) -> 1,234
+ * @param v - number to convert to number string
+ */
+function formatNumber(v: number): string {
+	return v < 1 ? format2(v) : v < 10 ? format1(v) : format0(v);
+}
 
 /**
  * Measure the content area minus the padding and border
@@ -37,6 +63,40 @@ function measure(container: HTMLElement): DOMRect {
 	result.width = result.width - pw - bw;
 	result.height = result.height - ph - bh;
 	return result;
+}
+
+/**
+ * Returns the x,y pair measurement
+ * @param referenceElement - element to position targetElement by
+ * @param targetElement - element that will receive position values
+ * @param padding - (optional) additional padding to account for
+ */
+function positionPop(referenceElement: SVGElement, targetElement: HTMLElement | SVGElement, padding: number = 0): TPosition {
+	const rb: DOMRect = referenceElement.getBoundingClientRect();
+	const tb: DOMRect = targetElement.getBoundingClientRect();
+	const ch: number = document.documentElement.clientHeight;
+	const cw: number = document.documentElement.clientWidth;
+	let x = rb.right + padding, y = rb.bottom + padding;
+
+	let v: TOrientY = "bottom";
+	if (rb.top > tb.height + padding) {
+		v = "top";
+		y = rb.top - padding - tb.height;
+	} else if (rb.bottom + tb.height + padding > ch) {
+		v = "middle";
+		y = rb.top + (rb.height / 2);
+	}
+
+	let h: TOrientX = "right";
+	if (rb.left > tb.left + tb.width + padding) {
+		h = "left";
+		x = rb.left - padding - tb.width;
+	} else if (rb.right + tb.width + padding > cw) {
+		h = "center";
+		x = rb.left + (rb.width / 2);
+	}
+
+	return { orientX: h, orientY: v, x: x, y: y };
 }
 
 /**
@@ -101,15 +161,16 @@ function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElemen
 	return svg;
 }
 
-const format2 = format(",.2f"), format1 = format(",.1f"), format0 = format(",.0f");
-function formatNumber(v: number): string {
-	return v < 1 ? format2(v) : v < 10 ? format1(v) : format0(v);
-}
-
 export {
 	formatNumber,
 	measure,
+	positionPop,
 	svg,
+
 	TMargin,
+	TOrientX,
+	TOrientY,
+	TPoint,
+	TPosition,
 	TSVGGenerator
 };
