@@ -39,7 +39,7 @@ declare function measure(container: HTMLElement): DOMRect;
  * @param targetElement - element that will receive position values
  * @param padding - (optional) additional padding to account for
  */
-declare function positionPop(referenceElement: SVGElement, targetElement: HTMLElement | SVGElement, padding?: number): TPosition;
+declare function positionPop(referenceElement: HTMLElement | SVGElement, targetElement: HTMLElement | SVGElement, padding?: number): TPosition;
 /**
  * Creates SVG element for use with D3 visualisations
  * @param container - parent DOM element to append SVG to

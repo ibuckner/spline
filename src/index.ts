@@ -71,32 +71,34 @@ function measure(container: HTMLElement): DOMRect {
  * @param targetElement - element that will receive position values
  * @param padding - (optional) additional padding to account for
  */
-function positionPop(referenceElement: SVGElement, targetElement: HTMLElement | SVGElement, padding: number = 0): TPosition {
+function positionPop(referenceElement: HTMLElement | SVGElement, targetElement: HTMLElement | SVGElement, padding: number = 0): TPosition {
 	const rb: DOMRect = referenceElement.getBoundingClientRect();
 	const tb: DOMRect = targetElement.getBoundingClientRect();
 	const ch: number = document.documentElement.clientHeight;
 	const cw: number = document.documentElement.clientWidth;
-	let x: number = rb.right + padding, y: number = rb.top + (rb.height / 2) - (tb.height / 2);
-	let h: TOrientX = "right", v: TOrientY = "middle";
+	let x: number = (rb.right + window.scrollX) + padding;
+	let y: number = (rb.top + window.scrollY) + (rb.height / 2) - (tb.height / 2);
+	let h: TOrientX = "right";
+	let v: TOrientY = "middle";
 
 	if (y + tb.height > ch) {
 		v = "top";
-		y = rb.top - padding - tb.height;
+		y = (rb.top + window.scrollY) - padding - tb.height;
 	}
 	
-	if (y < 0) {
+	if (y < window.scrollY) {
 		v = "bottom";
-		y = rb.bottom + padding;
+		y = (rb.bottom + window.scrollY) + padding;
 	}
 
 	if (x + tb.width > cw) {
 		h = "left";
-		x = rb.left - padding - tb.width;
+		x = (rb.left + window.scrollX) - padding - tb.width;
 	}
 	
-	if (x < 0) {
+	if (x < window.scrollX) {
 		h = "center";
-		x = rb.left + (rb.width / 2);
+		x = (rb.left + window.scrollX) + (rb.width / 2);
 	}
 
 	return { orientX: h, orientY: v, x: x, y: y };
