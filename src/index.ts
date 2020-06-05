@@ -81,9 +81,9 @@ function positionPop(referenceElement: HTMLElement | SVGElement, targetElement: 
 	let h: TOrientX = "right";
 	let v: TOrientY = "middle";
 
-	if (y + tb.height > ch) {
+	if (y + tb.height - window.scrollY > ch) {
 		v = "top";
-		y = (rb.top + window.scrollY) - padding - tb.height;
+		y = rb.top + window.scrollY - padding - tb.height;
 	}
 	
 	if (y < window.scrollY) {
@@ -91,7 +91,7 @@ function positionPop(referenceElement: HTMLElement | SVGElement, targetElement: 
 		y = (rb.bottom + window.scrollY) + padding;
 	}
 
-	if (x + tb.width > cw) {
+	if (x + tb.width - window.scrollX > cw) {
 		h = "left";
 		x = (rb.left + window.scrollX) - padding - tb.width;
 	}
