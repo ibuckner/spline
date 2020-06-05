@@ -1,5 +1,5 @@
 {
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "A small collection of D3 related functions",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -839,8 +839,8 @@ function positionPop(referenceElement, targetElement, padding = 0) {
     const tb = targetElement.getBoundingClientRect();
     const ch = document.documentElement.clientHeight;
     const cw = document.documentElement.clientWidth;
-    let x = (rb.right + window.scrollX) + padding;
-    let y = (rb.top + window.scrollY) + (rb.height / 2) - (tb.height / 2);
+    let x = (rb.right + window.scrollX) + padding + rb.width;
+    let y = (rb.top + window.scrollY) + (tb.height / 2);
     let h = "right";
     let v = "middle";
     if (y + tb.height - window.scrollY > ch) {

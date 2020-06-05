@@ -76,8 +76,8 @@ function positionPop(referenceElement: HTMLElement | SVGElement, targetElement: 
 	const tb: DOMRect = targetElement.getBoundingClientRect();
 	const ch: number = document.documentElement.clientHeight;
 	const cw: number = document.documentElement.clientWidth;
-	let x: number = (rb.right + window.scrollX) + padding;
-	let y: number = (rb.top + window.scrollY) + (rb.height / 2) - (tb.height / 2);
+	let x: number = (rb.right + window.scrollX) + padding + rb.width;
+	let y: number = (rb.top + window.scrollY) + (tb.height / 2);
 	let h: TOrientX = "right";
 	let v: TOrientY = "middle";
 
