@@ -1,4 +1,3 @@
-import { format } from "d3-format";
 import { ResizeObserver } from '@juggle/resize-observer';
 
 type TMargin = {
@@ -37,16 +36,6 @@ const NS = {
   xml: "http://www.w3.org/XML/1998/namespace",
   xmlns: "http://www.w3.org/2000/xmlns/"
 };
-
-const format2 = format(",.2f"), format1 = format(",.1f"), format0 = format(",.0f");
-/**
- * Convenience wrapper for D3-format
- * @example - formatNumber(1234) -> 1,234
- * @param v - number to convert to number string
- */
-function formatNumber(v: number): string {
-	return v < 1 ? format2(v) : v < 10 ? format1(v) : format0(v);
-}
 
 /**
  * Measure the content area minus the padding and border
@@ -167,7 +156,6 @@ function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElemen
 }
 
 export {
-	formatNumber,
 	measure,
 	positionPop,
 	svg,

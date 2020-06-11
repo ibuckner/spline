@@ -1,5 +1,5 @@
 {
-  "version": "0.5.10",
+  "version": "0.6.0",
   "description": "A small collection of D3 related functions",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -28,23 +28,21 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
-    "@types/d3": "^5.7.2",
-    "@types/jest": "^25.2.3",
-    "@typescript-eslint/eslint-plugin": "^3.1.0",
-    "@typescript-eslint/parser": "^3.1.0",
+    "@types/jest": "^26.0.0",
+    "@typescript-eslint/eslint-plugin": "^3.2.0",
+    "@typescript-eslint/parser": "^3.2.0",
     "eslint": "^7.2.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsdoc": "^27.0.4",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsdoc": "^27.0.6",
     "jest": "^26.0.1",
     "jsdoc": "^3.6.4",
-    "rollup": "^2.14.0",
+    "rollup": "^2.15.0",
     "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.1",
     "ts-jest": "^26.1.0",
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@juggle/resize-observer": "^3.2.0",
-    "d3-format": "^1.4.4"
+    "@juggle/resize-observer": "^3.2.0"
   }
 }

@@ -22,12 +22,6 @@ declare type TSVGGenerator = {
     width?: number;
 };
 /**
- * Convenience wrapper for D3-format
- * @example - formatNumber(1234) -> 1,234
- * @param v - number to convert to number string
- */
-declare function formatNumber(v: number): string;
-/**
  * Measure the content area minus the padding and border
  * @param container - DOM element to measure
  * @returns - DOMRect
@@ -46,4 +40,4 @@ declare function positionPop(referenceElement: HTMLElement | SVGElement, targetE
  * @param options - string to select from
  */
 declare function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElement>;
-export { formatNumber, measure, positionPop, svg, TMargin, TOrientX, TOrientY, TPoint, TPosition, TSVGGenerator };
+export { measure, positionPop, svg, TMargin, TOrientX, TOrientY, TPoint, TPosition, TSVGGenerator };
