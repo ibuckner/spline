@@ -584,6 +584,12 @@ function svg(container, options) {
     svg.setAttributeNS(null, "viewBox", `0 0 ${options.width} ${options.height}`);
     svg.setAttributeNS(null, "preserveAspectRatio", "xMinYMin meet");
     svg.setAttributeNS(NS.xmlns, "xmlns", NS.svg);
+    if (options.id) {
+        svg.setAttributeNS(null, "id", options.id);
+    }
+    if (options.class) {
+        svg.setAttributeNS(null, "class", options.class);
+    }
     container.appendChild(svg);
     const defs = document.createElementNS(NS.svg, "defs");
     svg.appendChild(defs);

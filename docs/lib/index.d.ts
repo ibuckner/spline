@@ -17,7 +17,9 @@ declare type TPosition = {
     y: number;
 };
 declare type TSVGGenerator = {
+    class?: string;
     height?: number;
+    id?: string;
     margin?: TMargin;
     width?: number;
 };
