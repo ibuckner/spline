@@ -24,12 +24,6 @@ declare type TSVGGenerator = {
     width?: number;
 };
 /**
- * Measure the content area minus the padding and border
- * @param container - DOM element to measure
- * @returns - DOMRect
- */
-declare function measure(container: HTMLElement): DOMRect;
-/**
  * Returns the x,y pair measurement
  * @param referenceElement - element to position targetElement by
  * @param targetElement - element that will receive position values
@@ -42,4 +36,4 @@ declare function positionPop(referenceElement: HTMLElement | SVGElement, targetE
  * @param options - string to select from
  */
 declare function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElement>;
-export { measure, positionPop, svg, TMargin, TOrientX, TOrientY, TPoint, TPosition, TSVGGenerator };
+export { positionPop, svg, TMargin, TOrientX, TOrientY, TPoint, TPosition, TSVGGenerator };

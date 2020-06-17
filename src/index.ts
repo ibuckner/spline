@@ -40,23 +40,6 @@ const NS = {
 };
 
 /**
- * Measure the content area minus the padding and border
- * @param container - DOM element to measure
- * @returns - DOMRect
- */
-function measure(container: HTMLElement): DOMRect {
-	let result: any = JSON.parse(JSON.stringify(container.getBoundingClientRect()));
-	const s = window.getComputedStyle(container);
-	let ph = parseFloat(s.paddingTop) + parseFloat(s.paddingBottom);
-	let pw = parseFloat(s.paddingLeft) + parseFloat(s.paddingRight);
-	let bh = parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth);
-	let bw = parseFloat(s.borderLeftWidth) + parseFloat(s.borderRightWidth);
-	result.width = result.width - pw - bw;
-	result.height = result.height - ph - bh;
-	return result as DOMRect;
-}
-
-/**
  * Returns the x,y pair measurement
  * @param referenceElement - element to position targetElement by
  * @param targetElement - element that will receive position values
@@ -106,7 +89,7 @@ function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElemen
 	}
 
 	if (options.height === undefined || options.width === undefined) {
-		const bbox: DOMRect = measure(container);
+		const bbox: DOMRect = container.getBoundingClientRect();
 		options.height = bbox.height;
 		options.width = bbox.width;
 	}
@@ -164,7 +147,6 @@ function svg(container: HTMLElement, options?: TSVGGenerator): Partial<SVGElemen
 }
 
 export {
-	measure,
 	positionPop,
 	svg,
 

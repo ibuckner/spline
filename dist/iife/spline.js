@@ -497,22 +497,6 @@ var spline = (function (exports) {
         xmlns: "http://www.w3.org/2000/xmlns/"
     };
     /**
-     * Measure the content area minus the padding and border
-     * @param container - DOM element to measure
-     * @returns - DOMRect
-     */
-    function measure(container) {
-        let result = JSON.parse(JSON.stringify(container.getBoundingClientRect()));
-        const s = window.getComputedStyle(container);
-        let ph = parseFloat(s.paddingTop) + parseFloat(s.paddingBottom);
-        let pw = parseFloat(s.paddingLeft) + parseFloat(s.paddingRight);
-        let bh = parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth);
-        let bw = parseFloat(s.borderLeftWidth) + parseFloat(s.borderRightWidth);
-        result.width = result.width - pw - bw;
-        result.height = result.height - ph - bh;
-        return result;
-    }
-    /**
      * Returns the x,y pair measurement
      * @param referenceElement - element to position targetElement by
      * @param targetElement - element that will receive position values
@@ -555,7 +539,7 @@ var spline = (function (exports) {
             options = {};
         }
         if (options.height === undefined || options.width === undefined) {
-            const bbox = measure(container);
+            const bbox = container.getBoundingClientRect();
             options.height = bbox.height;
             options.width = bbox.width;
         }
@@ -603,7 +587,6 @@ var spline = (function (exports) {
         return svg;
     }
 
-    exports.measure = measure;
     exports.positionPop = positionPop;
     exports.svg = svg;
 
