@@ -45,7 +45,7 @@ const NS = {
  * @returns - DOMRect
  */
 function measure(container: HTMLElement): DOMRect {
-	let result: DOMRect = container.getBoundingClientRect();
+	let result: any = JSON.parse(JSON.stringify(container.getBoundingClientRect()));
 	const s = window.getComputedStyle(container);
 	let ph = parseFloat(s.paddingTop) + parseFloat(s.paddingBottom);
 	let pw = parseFloat(s.paddingLeft) + parseFloat(s.paddingRight);
@@ -53,7 +53,7 @@ function measure(container: HTMLElement): DOMRect {
 	let bw = parseFloat(s.borderLeftWidth) + parseFloat(s.borderRightWidth);
 	result.width = result.width - pw - bw;
 	result.height = result.height - ph - bh;
-	return result;
+	return result as DOMRect;
 }
 
 /**

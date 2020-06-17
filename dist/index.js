@@ -499,7 +499,7 @@ const NS = {
  * @returns - DOMRect
  */
 function measure(container) {
-    let result = container.getBoundingClientRect();
+    let result = JSON.parse(JSON.stringify(container.getBoundingClientRect()));
     const s = window.getComputedStyle(container);
     let ph = parseFloat(s.paddingTop) + parseFloat(s.paddingBottom);
     let pw = parseFloat(s.paddingLeft) + parseFloat(s.paddingRight);
