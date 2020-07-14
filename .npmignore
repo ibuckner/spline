@@ -10,3 +10,4 @@ node_modules
 rollup.config.js
 src
 docs
+pnpm-lock.yaml

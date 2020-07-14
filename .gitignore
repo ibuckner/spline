@@ -5,3 +5,4 @@ node_modules
 .buildcache
 npm-debug.log
 package-lock.json
+dist

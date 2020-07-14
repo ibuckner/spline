@@ -12,9 +12,14 @@ export default [
 		},
 	  output: [
 			{
-				file: "./dist/index.js",
-				format: "esm",
+				file: "./dist/esm/index.js",
+				format: "es",
 				esModule: true
+			},
+			{
+				file: "./dist/cjs/index.js",
+				format: "cjs",
+				esModule: false
 			},
 			{
 				file: "./dist/iife/spline.js",

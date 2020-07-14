@@ -1,8 +1,9 @@
 {
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A small collection of D3 related functions",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "type": "commonjs",
   "name": "@buckneri/spline",
   "scripts": {
     "build": "npm run compile",
@@ -26,21 +27,22 @@
   },
   "homepage": "https://github.com/ibuckner/spline#readme",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^13.0.0",
-    "@rollup/plugin-node-resolve": "^8.0.1",
-    "@types/jest": "^26.0.0",
-    "@typescript-eslint/eslint-plugin": "^3.3.0",
-    "@typescript-eslint/parser": "^3.3.0",
-    "eslint": "^7.2.0",
-    "eslint-plugin-import": "^2.21.2",
-    "eslint-plugin-jsdoc": "^27.1.1",
-    "jest": "^26.0.1",
+    "@rollup/plugin-commonjs": "14.0.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@types/jest": "^26.0.4",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.6.1",
+    "eslint": "^7.4.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsdoc": "28.2.0",
+    "jest": "^26.1.0",
     "jsdoc": "^3.6.4",
-    "rollup": "^2.16.1",
+    "rollup": "^2.21.0",
     "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.1",
-    "ts-jest": "^26.1.0",
-    "typescript": "^3.9.5"
+    "ts-jest": "^26.1.2",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.6"
   },
   "dependencies": {
     "@juggle/resize-observer": "^3.2.0"
