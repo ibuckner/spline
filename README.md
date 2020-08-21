@@ -17,6 +17,8 @@ positionPop(referenceElement, targetElement, 20);
  *   }
  */
 
+new RGB (*CSS_color*);
+
 svg(element, { margin: { left: 23, top: 18 }});
 // returns the SVGElement attached to the (parent) element
 ```
