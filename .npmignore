@@ -6,6 +6,7 @@
 .github
 .vscode
 build
+coverage
 node_modules
 rollup.config.js
 src
