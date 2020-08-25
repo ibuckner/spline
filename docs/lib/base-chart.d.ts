@@ -6,6 +6,7 @@ export declare class Basechart {
     margin: TMargin;
     rh: number;
     rw: number;
+    scale: any;
     w: number;
     constructor(options: any);
     /**

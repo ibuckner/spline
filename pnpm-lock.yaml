@@ -1,9 +1,13 @@
 dependencies:
   '@juggle/resize-observer': 3.2.0
+  d3-scale: 3.2.2
+  d3-scale-chromatic: 2.0.0
   d3-selection: 2.0.0
 devDependencies:
   '@rollup/plugin-commonjs': 15.0.0_rollup@2.26.5
   '@rollup/plugin-node-resolve': 9.0.0_rollup@2.26.5
+  '@types/d3-scale': 2.2.0
+  '@types/d3-scale-chromatic': 1.5.0
   '@types/d3-selection': 1.4.2
   '@types/jest': 26.0.10
   '@typescript-eslint/eslint-plugin': 3.10.0_e76cf3c775d3925447e4ac421e0a9545
@@ -611,10 +615,24 @@ packages:
     dev: true
     resolution:
       integrity: sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
+  /@types/d3-scale-chromatic/1.5.0:
+    dev: true
+    resolution:
+      integrity: sha512-9/D7cOBKdZdTCPc6re0HeSUFBM0aFzdNdmYggUWT9SRRiYSOa6Ys2xdTwHKgc1WS3gGfwTMatBOdWCS863REsg==
+  /@types/d3-scale/2.2.0:
+    dependencies:
+      '@types/d3-time': 1.0.10
+    dev: true
+    resolution:
+      integrity: sha512-oQFanN0/PiR2oySHfj+zAAkK1/p4LD32Nt1TMVmzk+bYHk7vgIg/iTXQWitp1cIkDw4LMdcgvO63wL+mNs47YA==
   /@types/d3-selection/1.4.2:
     dev: true
     resolution:
       integrity: sha512-ksY8UxvTXpzD91Dy3D9zZg98yF2ZEPMKJd8ZQJlZt1QH3Xxr08s6fESEdC2l0Kbe6Xd9VhaoJX06cRaMR1lEnA==
+  /@types/d3-time/1.0.10:
+    dev: true
+    resolution:
+      integrity: sha512-aKf62rRQafDQmSiv1NylKhIMmznsjRN+MnXRXTqHoqm0U/UZzVpdrtRnSIfdiLS616OuC1soYeX1dBg2n1u8Xw==
   /@types/eslint-visitor-keys/1.0.0:
     dev: true
     resolution:
@@ -1399,10 +1417,55 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-AZL67abkUzIuvcHqk7c09cezpGNcxUxU4Ioi/05xHk4DQeTkWmGYftIE6ctU6AEt+Gn4n1lDStOtj7FKycP71A==
+  /d3-array/2.6.0:
+    dev: false
+    resolution:
+      integrity: sha512-1TgzIGb6hrHKSCGccdL209Ibk41HCeyv5znFEvJfBsBGhD3qpoHt/2W2ECpyLxpG1k7aNJz0BYrmLpVs9hIGNQ==
+  /d3-color/2.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-SPXi0TSKPD4g9tw0NMZFnR95XVgUZiBH+uUTqQuDu1OsE2zomHU7ho0FISciaPvosimixwHFl3WHLGabv6dDgQ==
+  /d3-format/2.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-Ab3S6XuE/Q+flY96HXT0jOXcM4EAClYFnRGY5zsjRGNy6qCYrQsMffs7cV5Q9xejb35zxW5hf/guKw34kvIKsA==
+  /d3-interpolate/2.0.1:
+    dependencies:
+      d3-color: 2.0.0
+    dev: false
+    resolution:
+      integrity: sha512-c5UhwwTs/yybcmTpAVqwSFl6vrQ8JZJoT5F7xNFK9pymv5C0Ymcc9/LIJHtYIggg/yS9YHw8i8O8tgb9pupjeQ==
+  /d3-scale-chromatic/2.0.0:
+    dependencies:
+      d3-color: 2.0.0
+      d3-interpolate: 2.0.1
+    dev: false
+    resolution:
+      integrity: sha512-LLqy7dJSL8yDy7NRmf6xSlsFZ6zYvJ4BcWFE4zBrOPnQERv9zj24ohnXKRbyi9YHnYV+HN1oEO3iFK971/gkzA==
+  /d3-scale/3.2.2:
+    dependencies:
+      d3-array: 2.6.0
+      d3-format: 2.0.0
+      d3-interpolate: 2.0.1
+      d3-time: 2.0.0
+      d3-time-format: 3.0.0
+    dev: false
+    resolution:
+      integrity: sha512-3Mvi5HfqPFq0nlyeFlkskGjeqrR/790pINMHc4RXKJ2E6FraTd3juaRIRZZHyMAbi3LjAMW0EH4FB1WgoGyeXg==
   /d3-selection/2.0.0:
     dev: false
     resolution:
       integrity: sha512-XoGGqhLUN/W14NmaqcO/bb1nqjDAw5WtSYb2X8wiuQWvSZUsUVYsOSkOybUrNvcBjaywBdYPy03eXHMXjk9nZA==
+  /d3-time-format/3.0.0:
+    dependencies:
+      d3-time: 2.0.0
+    dev: false
+    resolution:
+      integrity: sha512-UXJh6EKsHBTjopVqZBhFysQcoXSv/5yLONZvkQ5Kk3qbwiUYkdX17Xa1PT6U1ZWXGGfB1ey5L8dKMlFq2DO0Ag==
+  /d3-time/2.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-2mvhstTFcMvwStWd9Tj3e6CEqtOivtD8AUiHT8ido/xmzrI9ijrUUihZ6nHuf/vsScRBonagOdj0Vv+SEL5G3Q==
   /dashdash/1.14.1:
     dependencies:
       assert-plus: 1.0.0
@@ -5085,10 +5148,14 @@ specifiers:
   '@juggle/resize-observer': ^3.2.0
   '@rollup/plugin-commonjs': 15.0.0
   '@rollup/plugin-node-resolve': ^9.0.0
+  '@types/d3-scale': ^2.2.0
+  '@types/d3-scale-chromatic': ^1.5.0
   '@types/d3-selection': ^1.4.2
   '@types/jest': 26.0.10
   '@typescript-eslint/eslint-plugin': ^3.10.0
   '@typescript-eslint/parser': ^3.10.0
+  d3-scale: ^3.2.2
+  d3-scale-chromatic: ^2.0.0
   d3-selection: ^2.0.0
   eslint: ^7.7.0
   eslint-plugin-import: ^2.22.0

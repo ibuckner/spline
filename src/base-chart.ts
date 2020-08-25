@@ -1,4 +1,6 @@
 import { select, selectAll } from "d3-selection";
+import { scaleOrdinal } from "d3-scale";
+import { schemePaired } from "d3-scale-chromatic";
 import { TMargin } from ".";
 
 export class Basechart {
@@ -8,6 +10,7 @@ export class Basechart {
   public margin: TMargin = { bottom: 20, left: 20, right: 30, top: 20 };
   public rh: number = 160;
   public rw: number = 150;
+  public scale: any = {};
   public w: number = 200;
 
   constructor(options: any) {
@@ -33,6 +36,10 @@ export class Basechart {
     this.w = box.width;
     this.rh = this.h - this.margin.top - this.margin.bottom;
     this.rw = this.w - this.margin.left - this.margin.right;
+
+    this.scale.color = scaleOrdinal(schemePaired);
+    this.scale.x = (x: any) => x;
+    this.scale.y = (y: any) => y;
   }
 
   /**

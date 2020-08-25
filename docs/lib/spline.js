@@ -908,6 +908,68 @@ var spline = (function (exports) {
         : new Selection([selector == null ? [] : array(selector)], root);
   }
 
+  function initRange(domain, range) {
+    switch (arguments.length) {
+      case 0: break;
+      case 1: this.range(domain); break;
+      default: this.range(range).domain(domain); break;
+    }
+    return this;
+  }
+
+  const implicit = Symbol("implicit");
+
+  function ordinal() {
+    var index = new Map(),
+        domain = [],
+        range = [],
+        unknown = implicit;
+
+    function scale(d) {
+      var key = d + "", i = index.get(key);
+      if (!i) {
+        if (unknown !== implicit) return unknown;
+        index.set(key, i = domain.push(d));
+      }
+      return range[(i - 1) % range.length];
+    }
+
+    scale.domain = function(_) {
+      if (!arguments.length) return domain.slice();
+      domain = [], index = new Map();
+      for (const value of _) {
+        const key = value + "";
+        if (index.has(key)) continue;
+        index.set(key, domain.push(value));
+      }
+      return scale;
+    };
+
+    scale.range = function(_) {
+      return arguments.length ? (range = Array.from(_), scale) : range.slice();
+    };
+
+    scale.unknown = function(_) {
+      return arguments.length ? (unknown = _, scale) : unknown;
+    };
+
+    scale.copy = function() {
+      return ordinal(domain, range).unknown(unknown);
+    };
+
+    initRange.apply(scale, arguments);
+
+    return scale;
+  }
+
+  function colors(specifier) {
+    var n = specifier.length / 6 | 0, colors = new Array(n), i = 0;
+    while (i < n) colors[i] = "#" + specifier.slice(i * 6, ++i * 6);
+    return colors;
+  }
+
+  var schemePaired = colors("a6cee31f78b4b2df8a33a02cfb9a99e31a1cfdbf6fff7f00cab2d66a3d9affff99b15928");
+
   class Basechart {
       constructor(options) {
           this.container = document.querySelector("body");
@@ -916,6 +978,7 @@ var spline = (function (exports) {
           this.margin = { bottom: 20, left: 20, right: 30, top: 20 };
           this.rh = 160;
           this.rw = 150;
+          this.scale = {};
           this.w = 200;
           if (options.margin !== undefined) {
               let m = options.margin;
@@ -936,6 +999,9 @@ var spline = (function (exports) {
           this.w = box.width;
           this.rh = this.h - this.margin.top - this.margin.bottom;
           this.rw = this.w - this.margin.left - this.margin.right;
+          this.scale.color = ordinal(schemePaired);
+          this.scale.x = (x) => x;
+          this.scale.y = (y) => y;
       }
       /**
        * Clears selection from chart
