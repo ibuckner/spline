@@ -974,6 +974,7 @@ var spline = (function (exports) {
       constructor(options) {
           this.container = document.querySelector("body");
           this.h = 200;
+          this.id = "basechart";
           this.locale = "en-GB";
           this.margin = { bottom: 20, left: 20, right: 30, top: 20 };
           this.rh = 160;

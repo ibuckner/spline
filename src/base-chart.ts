@@ -6,6 +6,7 @@ import { TMargin } from ".";
 export class Basechart {
   public container: HTMLElement = document.querySelector("body") as HTMLElement;
   public h: number = 200;
+  public id: string = "basechart";
   public locale: string = "en-GB";
   public margin: TMargin = { bottom: 20, left: 20, right: 30, top: 20 };
   public rh: number = 160;

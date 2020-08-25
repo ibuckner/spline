@@ -1,5 +1,5 @@
 {
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "A small collection of D3 related functions",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -7,7 +7,7 @@
   "name": "@buckneri/spline",
   "scripts": {
     "build": "npm run compile",
-    "compile": "rollup -cw",
+    "compile": "rollup -c",
     "list-globals": "npm list -g --depth 0",
     "test": "npm run test-jest",
     "test-debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --config jestconfig.json --runInBand",

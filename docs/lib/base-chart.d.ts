@@ -2,6 +2,7 @@ import { TMargin } from ".";
 export declare class Basechart {
     container: HTMLElement;
     h: number;
+    id: string;
     locale: string;
     margin: TMargin;
     rh: number;
