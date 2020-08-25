@@ -47,10 +47,9 @@ export class Basechart {
   /**
    * Clears selection from chart
    */
-  public clearSelection(): Basechart {
+  public clearSelection(): void {
     selectAll(".selected").classed("selected", false);
     selectAll(".fade").classed("fade", false);
-    return this;
   }
 
   /**
@@ -62,11 +61,6 @@ export class Basechart {
   }
 
   public draw(): Basechart {
-    this._drawCanvas();
-    return this;
-  }
-
-  private _drawCanvas(): Basechart {
     if (select(this.container).select("svg").empty()) {
       let sg: SVGElement | null = svg(this.container, {
         height: this.h,
@@ -79,6 +73,7 @@ export class Basechart {
 
       this.canvas = s.select(".canvas");
     }
+
     return this;
   }
 }

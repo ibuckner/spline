@@ -1835,7 +1835,6 @@ var spline = (function (exports) {
       clearSelection() {
           selectAll(".selected").classed("selected", false);
           selectAll(".fade").classed("fade", false);
-          return this;
       }
       /**
        * Removes this chart from the DOM
@@ -1845,10 +1844,6 @@ var spline = (function (exports) {
           return this;
       }
       draw() {
-          this._drawCanvas();
-          return this;
-      }
-      _drawCanvas() {
           if (select(this.container).select("svg").empty()) {
               let sg = svg(this.container, {
                   height: this.h,

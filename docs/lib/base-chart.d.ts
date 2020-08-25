@@ -14,11 +14,10 @@ export declare class Basechart {
     /**
      * Clears selection from chart
      */
-    clearSelection(): Basechart;
+    clearSelection(): void;
     /**
      * Removes this chart from the DOM
      */
     destroy(): Basechart;
     draw(): Basechart;
-    private _drawCanvas;
 }
