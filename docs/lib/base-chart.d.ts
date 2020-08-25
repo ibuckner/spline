@@ -1,5 +1,6 @@
 import { TMargin } from ".";
 export declare class Basechart {
+    canvas: any;
     container: HTMLElement;
     h: number;
     id: string;
@@ -18,4 +19,6 @@ export declare class Basechart {
      * Removes this chart from the DOM
      */
     destroy(): Basechart;
+    draw(): Basechart;
+    private _drawCanvas;
 }

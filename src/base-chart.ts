@@ -1,9 +1,10 @@
 import { select, selectAll } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
 import { schemePaired } from "d3-scale-chromatic";
-import { TMargin } from ".";
+import { svg, TMargin } from ".";
 
 export class Basechart {
+  public canvas: any;
   public container: HTMLElement = document.querySelector("body") as HTMLElement;
   public h: number = 200;
   public id: string = "basechart";
@@ -57,6 +58,27 @@ export class Basechart {
    */
   public destroy(): Basechart {
     select(this.container).select("svg").remove();
+    return this;
+  }
+
+  public draw(): Basechart {
+    this._drawCanvas();
+    return this;
+  }
+
+  private _drawCanvas(): Basechart {
+    if (select(this.container).select("svg").empty()) {
+      let sg: SVGElement | null = svg(this.container, {
+        height: this.h,
+        margin: this.margin,
+        width: this.w
+      }) as SVGElement;
+
+      const s = select(sg)
+        .on("click", () => this.clearSelection());
+
+      this.canvas = s.select(".canvas");
+    }
     return this;
   }
 }

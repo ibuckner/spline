@@ -970,57 +970,6 @@ var spline = (function (exports) {
 
   var schemePaired = colors("a6cee31f78b4b2df8a33a02cfb9a99e31a1cfdbf6fff7f00cab2d66a3d9affff99b15928");
 
-  class Basechart {
-      constructor(options) {
-          this.container = document.querySelector("body");
-          this.h = 200;
-          this.id = "basechart";
-          this.locale = "en-GB";
-          this.margin = { bottom: 20, left: 20, right: 30, top: 20 };
-          this.rh = 160;
-          this.rw = 150;
-          this.scale = {};
-          this.w = 200;
-          if (options.margin !== undefined) {
-              let m = options.margin;
-              m.left = isNaN(m.left) ? 0 : m.left;
-              m.right = isNaN(m.right) ? 0 : m.right;
-              m.top = isNaN(m.top) ? 0 : m.top;
-              m.bottom = isNaN(m.bottom) ? 0 : m.bottom;
-              this.margin = m;
-          }
-          if (options.locale !== undefined) {
-              this.locale = options.locale;
-          }
-          if (options.container !== undefined) {
-              this.container = options.container;
-          }
-          const box = this.container.getBoundingClientRect();
-          this.h = box.height;
-          this.w = box.width;
-          this.rh = this.h - this.margin.top - this.margin.bottom;
-          this.rw = this.w - this.margin.left - this.margin.right;
-          this.scale.color = ordinal(schemePaired);
-          this.scale.x = (x) => x;
-          this.scale.y = (y) => y;
-      }
-      /**
-       * Clears selection from chart
-       */
-      clearSelection() {
-          selectAll(".selected").classed("selected", false);
-          selectAll(".fade").classed("fade", false);
-          return this;
-      }
-      /**
-       * Removes this chart from the DOM
-       */
-      destroy() {
-          select(this.container).select("svg").remove();
-          return this;
-      }
-  }
-
   /**
    * Returns the x,y pair measurement
    * @param referenceElement - element to position targetElement by
@@ -1844,6 +1793,74 @@ var spline = (function (exports) {
       canvas.setAttributeNS(null, "transform", `translate(${options.margin.left},${options.margin.top})`);
       svg.appendChild(canvas);
       return svg;
+  }
+
+  class Basechart {
+      constructor(options) {
+          this.container = document.querySelector("body");
+          this.h = 200;
+          this.id = "basechart";
+          this.locale = "en-GB";
+          this.margin = { bottom: 20, left: 20, right: 30, top: 20 };
+          this.rh = 160;
+          this.rw = 150;
+          this.scale = {};
+          this.w = 200;
+          if (options.margin !== undefined) {
+              let m = options.margin;
+              m.left = isNaN(m.left) ? 0 : m.left;
+              m.right = isNaN(m.right) ? 0 : m.right;
+              m.top = isNaN(m.top) ? 0 : m.top;
+              m.bottom = isNaN(m.bottom) ? 0 : m.bottom;
+              this.margin = m;
+          }
+          if (options.locale !== undefined) {
+              this.locale = options.locale;
+          }
+          if (options.container !== undefined) {
+              this.container = options.container;
+          }
+          const box = this.container.getBoundingClientRect();
+          this.h = box.height;
+          this.w = box.width;
+          this.rh = this.h - this.margin.top - this.margin.bottom;
+          this.rw = this.w - this.margin.left - this.margin.right;
+          this.scale.color = ordinal(schemePaired);
+          this.scale.x = (x) => x;
+          this.scale.y = (y) => y;
+      }
+      /**
+       * Clears selection from chart
+       */
+      clearSelection() {
+          selectAll(".selected").classed("selected", false);
+          selectAll(".fade").classed("fade", false);
+          return this;
+      }
+      /**
+       * Removes this chart from the DOM
+       */
+      destroy() {
+          select(this.container).select("svg").remove();
+          return this;
+      }
+      draw() {
+          this._drawCanvas();
+          return this;
+      }
+      _drawCanvas() {
+          if (select(this.container).select("svg").empty()) {
+              let sg = svg(this.container, {
+                  height: this.h,
+                  margin: this.margin,
+                  width: this.w
+              });
+              const s = select(sg)
+                  .on("click", () => this.clearSelection());
+              this.canvas = s.select(".canvas");
+          }
+          return this;
+      }
   }
 
   exports.Basechart = Basechart;
