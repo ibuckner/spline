@@ -1863,6 +1863,8 @@ var spline = (function (exports) {
   exports.positionPop = positionPop;
   exports.svg = svg;
 
+  Object.defineProperty(exports, '__esModule', { value: true });
+
   return exports;
 
 }({}));
