@@ -63,10 +63,14 @@ var spline = (function (exports) {
     return new Selection(subgroups, this._parents);
   }
 
+  // Given something array like (or null), returns something that is strictly an
+  // array. This is used to ensure that array-like objects passed to d3.selectAll
+  // or selection.selectAll are converted into proper arrays when creating a
+  // selection; we don’t ever want to create a selection backed by a live
+  // HTMLCollection or NodeList. However, note that selection.selectAll will use a
+  // static NodeList as a group, since it safely derived from querySelectorAll.
   function array(x) {
-    return typeof x === "object" && "length" in x
-      ? x // Array, TypedArray, NodeList, array-like
-      : Array.from(x); // Map, Set, iterable, string, or anything else
+    return x == null ? [] : Array.isArray(x) ? x : Array.from(x);
   }
 
   function empty() {
@@ -81,8 +85,7 @@ var spline = (function (exports) {
 
   function arrayAll(select) {
     return function() {
-      var group = select.apply(this, arguments);
-      return group == null ? [] : array(group);
+      return array(select.apply(this, arguments));
     };
   }
 
@@ -134,7 +137,7 @@ var spline = (function (exports) {
   var filter = Array.prototype.filter;
 
   function children() {
-    return this.children;
+    return Array.from(this.children);
   }
 
   function childrenFilter(match) {
@@ -279,7 +282,7 @@ var spline = (function (exports) {
       var parent = parents[j],
           group = groups[j],
           groupLength = group.length,
-          data = array(value.call(parent, parent && parent.__data__, j, parents)),
+          data = arraylike(value.call(parent, parent && parent.__data__, j, parents)),
           dataLength = data.length,
           enterGroup = enter[j] = new Array(dataLength),
           updateGroup = update[j] = new Array(dataLength),
@@ -305,20 +308,40 @@ var spline = (function (exports) {
     return update;
   }
 
+  // Given some data, this returns an array-like view of it: an object that
+  // exposes a length property and allows numeric indexing. Note that unlike
+  // selectAll, this isn’t worried about “live” collections because the resulting
+  // array will only be used briefly while data is being bound. (It is possible to
+  // cause the data to change while iterating by using a key function, but please
+  // don’t; we’d rather avoid a gratuitous copy.)
+  function arraylike(data) {
+    return typeof data === "object" && "length" in data
+      ? data // Array, TypedArray, NodeList, array-like
+      : Array.from(data); // Map, Set, iterable, string, or anything else
+  }
+
   function selection_exit() {
     return new Selection(this._exit || this._groups.map(sparse), this._parents);
   }
 
   function selection_join(onenter, onupdate, onexit) {
     var enter = this.enter(), update = this, exit = this.exit();
-    enter = typeof onenter === "function" ? onenter(enter) : enter.append(onenter + "");
-    if (onupdate != null) update = onupdate(update);
+    if (typeof onenter === "function") {
+      enter = onenter(enter);
+      if (enter) enter = enter.selection();
+    } else {
+      enter = enter.append(onenter + "");
+    }
+    if (onupdate != null) {
+      update = onupdate(update);
+      if (update) update = update.selection();
+    }
     if (onexit == null) exit.remove(); else onexit(exit);
     return enter && update ? enter.merge(update).order() : update;
   }
 
-  function selection_merge(selection) {
-    if (!(selection instanceof Selection)) throw new Error("invalid merge");
+  function selection_merge(context) {
+    var selection = context.selection ? context.selection() : context;
 
     for (var groups0 = this._groups, groups1 = selection._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
       for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
@@ -901,7 +924,52 @@ var spline = (function (exports) {
   function selectAll(selector) {
     return typeof selector === "string"
         ? new Selection([document.querySelectorAll(selector)], [document.documentElement])
-        : new Selection([selector == null ? [] : array(selector)], root);
+        : new Selection([array(selector)], root);
+  }
+
+  class InternMap extends Map {
+    constructor(entries, key = keyof) {
+      super();
+      Object.defineProperties(this, {_intern: {value: new Map()}, _key: {value: key}});
+      if (entries != null) for (const [key, value] of entries) this.set(key, value);
+    }
+    get(key) {
+      return super.get(intern_get(this, key));
+    }
+    has(key) {
+      return super.has(intern_get(this, key));
+    }
+    set(key, value) {
+      return super.set(intern_set(this, key), value);
+    }
+    delete(key) {
+      return super.delete(intern_delete(this, key));
+    }
+  }
+
+  function intern_get({_intern, _key}, value) {
+    const key = _key(value);
+    return _intern.has(key) ? _intern.get(key) : value;
+  }
+
+  function intern_set({_intern, _key}, value) {
+    const key = _key(value);
+    if (_intern.has(key)) return _intern.get(key);
+    _intern.set(key, value);
+    return value;
+  }
+
+  function intern_delete({_intern, _key}, value) {
+    const key = _key(value);
+    if (_intern.has(key)) {
+      value = _intern.get(value);
+      _intern.delete(key);
+    }
+    return value;
+  }
+
+  function keyof(value) {
+    return value !== null && typeof value === "object" ? value.valueOf() : value;
   }
 
   function initRange(domain, range) {
@@ -916,27 +984,26 @@ var spline = (function (exports) {
   const implicit = Symbol("implicit");
 
   function ordinal() {
-    var index = new Map(),
+    var index = new InternMap(),
         domain = [],
         range = [],
         unknown = implicit;
 
     function scale(d) {
-      var key = d + "", i = index.get(key);
-      if (!i) {
+      let i = index.get(d);
+      if (i === undefined) {
         if (unknown !== implicit) return unknown;
-        index.set(key, i = domain.push(d));
+        index.set(d, i = domain.push(d) - 1);
       }
-      return range[(i - 1) % range.length];
+      return range[i % range.length];
     }
 
     scale.domain = function(_) {
       if (!arguments.length) return domain.slice();
-      domain = [], index = new Map();
+      domain = [], index = new InternMap();
       for (const value of _) {
-        const key = value + "";
-        if (index.has(key)) continue;
-        index.set(key, domain.push(value));
+        if (index.has(value)) continue;
+        index.set(value, domain.push(value) - 1);
       }
       return scale;
     };
@@ -1378,6 +1445,9 @@ var spline = (function (exports) {
   };
   var isElement = function (obj) {
       var _a, _b;
+      if (obj instanceof Element) {
+          return true;
+      }
       var scope = (_b = (_a = obj) === null || _a === void 0 ? void 0 : _a.ownerDocument) === null || _b === void 0 ? void 0 : _b.defaultView;
       return !!(scope && obj instanceof scope.Element);
   };
